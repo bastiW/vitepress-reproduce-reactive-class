@@ -1,21 +1,51 @@
 <script setup lang="ts">
-import { useData } from 'vitepress'
+import { useData, useRoute } from 'vitepress'
 
 // https://vitepress.dev/reference/runtime-api#usedata
 const { site, frontmatter } = useData()
+
+
+
+const route = useRoute()
+
+type NavItem = {
+  href: string,
+  name: string
+}
+
+const navItems: NavItem[] = [
+  {
+    href:'/',
+    name: 'Home'
+  },
+  {
+    href:'/markdown-examples.html',
+    name: 'Markdown Examples'
+  },
+  {
+    href: '/api-examples.html',
+    name: 'API Examples'
+  }
+]
+
+const isActiveRoute = (url: string) => {
+  return route.path === url
+}
+
+
 </script>
 
 <template>
-  <div v-if="frontmatter.home">
-    <h1>{{ site.title }}</h1>
-    <p>{{ site.description }}</p>
-    <ul>
-      <li><a href="/markdown-examples.html">Markdown Examples</a></li>
-      <li><a href="/api-examples.html">API Examples</a></li>
+    <ul v-for='({ href, name  }) of navItems'>
+      <li>
+        <a :href="href" :class="{'link--active': isActiveRoute(href)}">{{isActiveRoute(href)? 'active': 'inactive'}}: {{name}}</a>
+      </li>
     </ul>
-  </div>
-  <div v-else>
-    <a href="/">Home</a>
     <Content />
-  </div>
 </template>
+
+<style>
+  .link--active {
+    font-weight: bold;
+  }
+</style>
